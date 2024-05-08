@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
 from views.user import create_user, login_user
+from views import get_single_comment,get_all_comments
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -26,6 +27,27 @@ class HandleRequests(BaseHTTPRequestHandler):
                 pass
             return (resource, id)
 
+    def do_GET(self):
+        """Handles GET requests to the server"""
+        self._set_headers(200)
+        response = {}
+
+        # Parse URL and store entire tuple in a variable
+        parsed = self.parse_url(self.path)
+
+        # If the path does not include a query parameter, continue with the original if block
+        if '?' not in self.path:
+            (resource, id) = parsed
+
+            # It's an if..else statement
+            if resource == "comments":
+                if id is not None:
+                    response = get_single_comment(id)
+                else:
+                    response = get_all_comments()
+
+        self.wfile.write(json.dumps(response).encode())
+        
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
         headers on the response
@@ -48,10 +70,6 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers',
                          'X-Requested-With, Content-Type, Accept')
         self.end_headers()
-
-    def do_GET(self):
-        """Handle Get requests to the server"""
-        pass
 
 
     def do_POST(self):
