@@ -7,7 +7,7 @@ def create_category(new_category):
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
-            INSERT INTO Category
+            INSERT INTO Categories
                 ( id, follower_id, author_id, created_id)
             VALUES
                 ( ?, ?, ?, ? )
@@ -24,7 +24,7 @@ def update_category(id, new_category):
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
-            UPDATE Category
+            UPDATE Categories
                 SET
                     follower_id = ?,
                     author_id = ?,
@@ -37,11 +37,11 @@ def delete_category(id):
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
-            DELETE FROM Category
+            DELETE FROM Categories
             WHERE id = ?
             """, (id, ))
 
-def get_all_categorys():
+def get_all_categories():
     with sqlite3.connect("./rare.sqlite3") as conn:
         
         categorys = []
@@ -50,18 +50,16 @@ def get_all_categorys():
         
         db_cursor.execute("""
             SELECT
-                s.id,
-                s.follower_id,
-                s.author_id,
-                s.created_id
-            FROM Category s
+                c.id,
+                c.label
+            FROM Categories c
                 """)
         
         data = db_cursor.fetchall()
         
         for row in data:
 
-            category = category(row['id'], row['follower_id'], row['author_id'], row['created_id'])
+            category = Category(row['id'], row['label'])
             categorys.append(category.__dict__)
         
         return categorys
@@ -73,12 +71,10 @@ def get_single_category(id):
         
         db_cursor.execute("""
             SELECT
-                s.id,
-                s.follower_id,
-                s.author_id,
-                s.created_id
-            FROM Category s
-            WHERE s.id = ?
+                c.id,
+                c.label
+            FROM Categories c
+            WHERE c.id = ?
             """, ( id, ))
         
         data = db_cursor.fetchone()
