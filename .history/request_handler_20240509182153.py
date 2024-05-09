@@ -52,41 +52,21 @@ class HandleRequests(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers(200)
-
         response = {}
         
+        parsed = self.parse_url(self.path)
+        
         if '?' not in self.path:
-            ( resource, id ) = self.parse_url(self.path)
+            (resource, id) = parsed
             
-            if resource == "Categories":
-                if id is not None:
-                    response = get_single_category(id)
-                
-                else:
-                    response = get_all_categories()
-            
-            if resource == "Subscriptions":
-                if id is not None:
-                    response = get_single_subscription(id)
-                
-                else:
-                    response = get_all_subscriptions()
-                    
             if resource == "Posts":
                 if id is not None:
                     response = get_single_post(id)
-                
                 else:
                     response = get_all_posts()
-                    
-        else: # There is a ? in the path, run the query param functions
-            (query, resource, id) = self.parse_url(self.path)
-
-            # see if the query has an author key
-            # if query.get('author') and resource == 'Posts':
-            #     response = get_posts_by_author(query['email'][0])
         
         self.wfile.write(json.dumps(response).encode())
+
 
     def do_POST(self):
         """Make a post request to the server"""
