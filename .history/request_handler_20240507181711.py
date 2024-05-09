@@ -1,29 +1,30 @@
-import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_posts, get_single_post
-from urllib.parse import urlparse, parse_qs
+import json
+
 from views.user import create_user, login_user
 
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
 
-    def parse_url(self, path):
+    def parse_url(self):
         """Parse the url into the resource and id"""
-        parsed_url = urlparse(path)
-        path_params = parsed_url.path.split('/')
+        path_params = self.path.split('/')
         resource = path_params[1]
-        
-        if parsed_url.query:
-            query = parse_qs(parsed_url.query)
-            return (resource, query)
-
-        pk = None
-        try:
-            pk = int(path_params[2])
-        except (IndexError, ValueError):
-            pass       
-        return (resource, pk)
+        if '?' in resource:
+            param = resource.split('?')[1]
+            resource = resource.split('?')[0]
+            pair = param.split('=')
+            key = pair[0]
+            value = pair[1]
+            return (resource, key, value)
+        else:
+            id = None
+            try:
+                id = int(path_params[2])
+            except (IndexError, ValueError):
+                pass
+            return (resource, id)
 
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
@@ -43,27 +44,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
-                            'GET, POST, PUT, DELETE')
+                         'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers',
-                            'X-Requested-With, Content-Type, Accept')
+                         'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
     def do_GET(self):
-        self._set_headers(200)
-        response = {}
-        
-        parsed = self.parse_url(self.path)
-        
-        if '?' not in self.path:
-            (resource, id) = parsed
-            
-            if resource == "Posts":
-                if id is not None:
-                    response = get_single_post(id)
-                else:
-                    response = get_all_posts()
-        
-        self.wfile.write(json.dumps(response).encode())
+        """Handle Get requests to the server"""
+        pass
 
 
     def do_POST(self):

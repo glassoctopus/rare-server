@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Request Handler",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "./request_handler.py",
             "console": "integratedTerminal"

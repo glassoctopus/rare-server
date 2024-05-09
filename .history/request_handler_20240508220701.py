@@ -57,7 +57,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         if '?' not in self.path:
             (resource, id) = parsed
             
-            if resource == "Posts":
+            if resource == "Users":
                 if id is not None:
                     response = get_single_post(id)
                 else:

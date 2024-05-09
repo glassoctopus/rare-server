@@ -1,5 +1,5 @@
-import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import json
 from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
 from views.user import create_user, login_user
@@ -57,7 +57,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         if '?' not in self.path:
             (resource, id) = parsed
             
-            if resource == "Posts":
+            if resource == "Users":
                 if id is not None:
                     response = get_single_post(id)
                 else:
