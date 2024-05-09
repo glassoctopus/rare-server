@@ -2,8 +2,6 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
-from views import get_single_category, get_all_categories, create_category, update_category, delete_category, get_single_subscription, get_all_subscriptions, create_subscription, delete_subscription
-
 from views.user import create_user, login_user
 
 
@@ -87,7 +85,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             # see if the query has an author key
             # if query.get('author') and resource == 'Posts':
             #     response = get_posts_by_author(query['email'][0])
-       
+        
         self.wfile.write(json.dumps(response).encode())
 
     def do_POST(self):

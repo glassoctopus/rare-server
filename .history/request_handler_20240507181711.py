@@ -1,8 +1,5 @@
-import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_posts, get_single_post
-from urllib.parse import urlparse, parse_qs
-from views import get_single_category, get_all_categories, create_category, update_category, delete_category, get_single_subscription, get_all_subscriptions, create_subscription, delete_subscription
+import json
 
 from views.user import create_user, login_user
 
@@ -10,7 +7,7 @@ from views.user import create_user, login_user
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
 
-    def parse_url(self, path):
+    def parse_url(self):
         """Parse the url into the resource and id"""
         path_params = self.path.split('/')
         resource = path_params[1]
@@ -47,48 +44,15 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods',
-                            'GET, POST, PUT, DELETE')
+                         'GET, POST, PUT, DELETE')
         self.send_header('Access-Control-Allow-Headers',
-                            'X-Requested-With, Content-Type, Accept')
+                         'X-Requested-With, Content-Type, Accept')
         self.end_headers()
 
     def do_GET(self):
-        self._set_headers(200)
+        """Handle Get requests to the server"""
+        pass
 
-        response = {}
-        
-        if '?' not in self.path:
-            ( resource, id ) = self.parse_url(self.path)
-            
-            if resource == "Categories":
-                if id is not None:
-                    response = get_single_category(id)
-                
-                else:
-                    response = get_all_categories()
-            
-            if resource == "Subscriptions":
-                if id is not None:
-                    response = get_single_subscription(id)
-                
-                else:
-                    response = get_all_subscriptions()
-                    
-            if resource == "Posts":
-                if id is not None:
-                    response = get_single_post(id)
-                
-                else:
-                    response = get_all_posts()
-                    
-        else: # There is a ? in the path, run the query param functions
-            (query, resource, id) = self.parse_url(self.path)
-
-            # see if the query has an author key
-            # if query.get('author') and resource == 'Posts':
-            #     response = get_posts_by_author(query['email'][0])
-       
-        self.wfile.write(json.dumps(response).encode())
 
     def do_POST(self):
         """Make a post request to the server"""
