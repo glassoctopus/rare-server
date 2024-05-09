@@ -1,14 +1,14 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-
+# from views import get_single_category, get_all_categories, create_category, update_category, delete_category, get_single_subscription, get_all_subscriptions, create_subscription, delete_subscription
 from views.user import create_user, login_user
-from views import get_single_comment,get_all_comments
+from views import get_single_comment,get_all_comments,create_comment
 
 
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
 
-    def parse_url(self):
+    def parse_url(self, path):
         """Parse the url into the resource and id"""
         path_params = self.path.split('/')
         resource = path_params[1]
@@ -28,8 +28,9 @@ class HandleRequests(BaseHTTPRequestHandler):
             return (resource, id)
 
     def do_GET(self):
-        """Handles GET requests to the server"""
+        """Handles GET request to the server"""
         self._set_headers(200)
+
         response = {}
 
         # Parse URL and store entire tuple in a variable
@@ -37,14 +38,16 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
-            (resource, id) = parsed
+            ( resource, id ) = parsed
 
             # It's an if..else statement
-            if resource == "comments":
+            if resource == "Comments":
                 if id is not None:
                     response = get_single_comment(id)
+
                 else:
                     response = get_all_comments()
+
 
         self.wfile.write(json.dumps(response).encode())
         
@@ -70,6 +73,48 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers',
                          'X-Requested-With, Content-Type, Accept')
         self.end_headers()
+        
+    def do_POST(self):
+        """Handles POST requests to the server"""
+        self._set_headers(201)
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = self.rfile.read(content_len)
+
+        # Convert JSON string to a Python dictionary
+        post_body = json.loads(post_body)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Initialize new animal
+        new_comment = None
+
+
+        # Add a new animal to the list. Don't worry about
+        # the orange squiggle, you'll define the create_animal
+        # function next.
+        if resource == "Comments":
+            new_comment = create_comment(post_body)
+            self.wfile.write(json.dumps(new_comment).encode())
+
+
+
+    # def do_GET(self):
+    #     self._set_headers(200)
+
+    #     response = {}
+        
+    #     if '?' not in self.path:
+    #         ( resource, id ) = self.parse_url(self.path)
+            
+    #         if resource == "Categories":
+    #             if id is not None:
+    #                 response = get_single_category(id)
+                
+    #             else:
+    #                 response = get_all_categories()
+        
+    #     self.wfile.write(json.dumps(response).encode())
 
 
     def do_POST(self):

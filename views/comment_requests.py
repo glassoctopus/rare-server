@@ -15,7 +15,7 @@ def get_all_comments():
             c.author_id,
             c.post_id,
             c.content
-        FROM comments c
+        FROM Comments c
         """)
 
         # Initialize an empty list to hold all comments
@@ -39,7 +39,7 @@ def update_comment(id, new_comment):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        UPDATE Comment
+        UPDATE Comments
             SET
                 author_id = ?,
                 post_id = ?,
@@ -66,7 +66,7 @@ def delete_comment(id):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        DELETE FROM comments
+        DELETE FROM Comments
         WHERE id = ?
         """, (id, ))
 
@@ -76,12 +76,11 @@ def create_comment(new_comment):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        INSERT INTO comments
-            ( autor_id, post_id, content)
+        INSERT INTO Comments
+            (author_id, post_id, content)
         VALUES
-            ( ?, ?, ?, ?, ?);
-        """, (new_comment['author_id'], new_comment['post_id'],
-              new_comment['content'], id, ))
+            (?, ?, ?);
+        """, (new_comment['author_id'], new_comment['post_id'], new_comment['content']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to
@@ -92,7 +91,6 @@ def create_comment(new_comment):
         # was sent by the client so that the client sees the
         # primary key in the response.
         new_comment['id'] = id
-
 
     return new_comment
 
@@ -107,17 +105,17 @@ def get_single_comment(id):
         db_cursor.execute("""
         SELECT
             c.id,
-            c.author/-id,
+            c.author_id,
             c.post_id,
             c.content
-        FROM comments a
-        WHERE a.id = ?
-        """, ( id, ))
+        FROM Comments c
+        WHERE c.id = ?
+        """, (id, ))
 
         # Load the single result into memory
         data = db_cursor.fetchone()
 
-        # Create an comment instance from the current row
+        # Create a comment instance from the current row
         comment = Comment(data['id'], data['author_id'], data['post_id'], data['content'])
 
         return comment.__dict__
