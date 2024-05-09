@@ -77,10 +77,10 @@ def create_comment(new_comment):
 
         db_cursor.execute("""
         INSERT INTO Comments
-            (author_id, post_id, content)
+            (id,author_id, post_id, content)
         VALUES
-            (?, ?, ?);
-        """, (new_comment['author_id'], new_comment['post_id'], new_comment['content']))
+            (?,?, ?, ?);
+        """, (new_comment['id'],new_comment['author_id'], new_comment['post_id'], new_comment['content']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to

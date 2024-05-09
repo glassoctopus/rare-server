@@ -3,6 +3,9 @@ import json
 # from views import get_single_category, get_all_categories, create_category, update_category, delete_category, get_single_subscription, get_all_subscriptions, create_subscription, delete_subscription
 from views.user import create_user, login_user
 from views import get_single_comment,get_all_comments,create_comment
+from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
+from views import get_all_categories,get_single_category,delete_category
+from views import get_all_subscriptions,get_single_subscription
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -47,6 +50,23 @@ class HandleRequests(BaseHTTPRequestHandler):
 
                 else:
                     response = get_all_comments()
+            if resource == "PostTags":
+                if id is not None:
+                    response= get_single_posttags(id)
+                    
+                else:   
+                    response= get_all_posttags()
+            
+            if resource == "Categories":
+                if id is not None:
+                    response= get_single_category(id)
+                
+                else: response = get_all_categories()
+            if resource == "Subscriptions":
+                if id is not None:
+                    response= get_single_subscription(id)
+                else:
+                    response= get_all_subscriptions
 
 
         self.wfile.write(json.dumps(response).encode())
@@ -99,22 +119,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
 
 
-    # def do_GET(self):
-    #     self._set_headers(200)
 
-    #     response = {}
-        
-    #     if '?' not in self.path:
-    #         ( resource, id ) = self.parse_url(self.path)
-            
-    #         if resource == "Categories":
-    #             if id is not None:
-    #                 response = get_single_category(id)
-                
-    #             else:
-    #                 response = get_all_categories()
-        
-    #     self.wfile.write(json.dumps(response).encode())
 
 
     def do_POST(self):
