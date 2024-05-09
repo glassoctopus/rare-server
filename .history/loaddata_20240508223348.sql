@@ -92,5 +92,3 @@ INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.c
 INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Ipsum Lorem', (CURRENT_DATE), '', 'Latin Stuff', 1);
 
 DELETE FROM Posts;
-
-INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Ipsum Lorem', (CURRENT_DATE), '', 'Latin Stuff', 1);

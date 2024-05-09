@@ -88,9 +88,4 @@ CREATE TABLE "Categories" (
 INSERT INTO Categories ('label') VALUES ('News');
 INSERT INTO Tags ('label') VALUES ('JavaScript');
 INSERT INTO Reactions ('label', 'image_url') VALUES ('happy', 'https://pngtree.com/so/happy');
-
-INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Ipsum Lorem', (CURRENT_DATE), '', 'Latin Stuff', 1);
-
-DELETE FROM Posts;
-
-INSERT INTO Posts ('user_id', 'category_id', 'title', 'publication_date', 'image_url', 'content', 'approved') VALUES (1, 1, 'Ipsum Lorem', (CURRENT_DATE), '', 'Latin Stuff', 1);
+INSERT INTO Posts VALUES (null, 1, 1, "Ipsum Lorem", "January 2024", "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.thoughtco.com%2Ffacts-about-nudibranchs-2291859&psig=AOvVaw0Cmug6X7UZukLXD_id2f5U&ust=1715218461976000&source=images&cd=vfe&opi=89978449&ved=0CBIQjRxqFwoTCID6gvT0_IUDFQAAAAAdAAAAABAE", "Latin Stuff", true)

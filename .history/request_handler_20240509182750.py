@@ -1,15 +1,8 @@
 import json
-
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
-from views import create_category, update_category, create_subscription, delete_subscription
-
 from views.user import create_user, login_user
-from views import get_single_comment,get_all_comments,create_comment
-from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
-from views import get_all_categories,get_single_category,delete_category
-from views import get_all_subscriptions,get_single_subscription
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -34,47 +27,6 @@ class HandleRequests(BaseHTTPRequestHandler):
                 pass
             return (resource, id)
 
-    def do_GET(self):
-        """Handles GET request to the server"""
-        self._set_headers(200)
-
-        response = {}
-
-        # Parse URL and store entire tuple in a variable
-        parsed = self.parse_url(self.path)
-
-        # If the path does not include a query parameter, continue with the original if block
-        if '?' not in self.path:
-            ( resource, id ) = parsed
-
-            # It's an if..else statement
-            if resource == "Comments":
-                if id is not None:
-                    response = get_single_comment(id)
-
-                else:
-                    response = get_all_comments()
-            if resource == "PostTags":
-                if id is not None:
-                    response= get_single_posttags(id)
-                    
-                else:   
-                    response= get_all_posttags()
-            
-            if resource == "Categories":
-                if id is not None:
-                    response= get_single_category(id)
-                
-                else: response = get_all_categories()
-            if resource == "Subscriptions":
-                if id is not None:
-                    response= get_single_subscription(id)
-                else:
-                    response= get_all_subscriptions
-
-
-        self.wfile.write(json.dumps(response).encode())
-        
     def _set_headers(self, status):
         """Sets the status code, Content-Type and Access-Control-Allow-Origin
         headers on the response
@@ -97,8 +49,46 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers',
                             'X-Requested-With, Content-Type, Accept')
         self.end_headers()
+
+    def do_GET(self):
+        self._set_headers(200)
+
+        response = {}
         
-      def do_POST(self):
+        if '?' not in self.path:
+            ( resource, id ) = self.parse_url(self.path)
+            
+            if resource == "Categories":
+                if id is not None:
+                    response = get_single_category(id)
+                
+                else:
+                    response = get_all_categories()
+            
+            if resource == "Subscriptions":
+                if id is not None:
+                    response = get_single_subscription(id)
+                
+                else:
+                    response = get_all_subscriptions()
+                    
+            if resource == "Posts":
+                if id is not None:
+                    response = get_single_post(id)
+                
+                else:
+                    response = get_all_posts()
+                    
+        else: # There is a ? in the path, run the query param functions
+            (query, resource, id) = self.parse_url(self.path)
+
+            # see if the query has an author key
+            # if query.get('author') and resource == 'Posts':
+            #     response = get_posts_by_author(query['email'][0])
+        
+        self.wfile.write(json.dumps(response).encode())
+
+    def do_POST(self):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
@@ -120,9 +110,6 @@ class HandleRequests(BaseHTTPRequestHandler):
     def do_DELETE(self):
         """Handle DELETE Requests"""
         pass
-
-
-
 
 
 def main():
