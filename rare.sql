@@ -10,5 +10,5 @@ CREATE TABLE `Category` (
     `label`    TEXT NOT NULL
 );
 
-INSERT INTO comments (id, author_id,post_id,content)
-VALUES (1,1232,112223,"Hello World");
+INSERT INTO posts (id, user_id,category_id,title,publication_date,image_url,content,approved)
+VALUES (1,1232,112223,09809,"Hello World",02/02/2024,"dasdasd","sadasdsad",true);

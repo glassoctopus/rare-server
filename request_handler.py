@@ -37,6 +37,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(200)
 
         response = {}
+        
+        # parsed = self.parse_url()
+        # resource, id =parsed
 
         # Parse URL and store entire tuple in a variable
 
