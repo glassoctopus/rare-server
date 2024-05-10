@@ -13,30 +13,30 @@ from views import get_all_subscriptions,get_single_subscription
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
 
-    def parse_url(self, path):
+    def parse_url(self):
         """Parse the url into the resource and id"""
-        parsed_url = urlparse(path)
-        path_params = parsed_url.path.split('/')
+        path_params = self.path.split('/')
         resource = path_params[1]
-        
-        if parsed_url.query:
-            query = parse_qs(parsed_url.query)
-            return (resource, query)
-
-        pk = None
-        try:
-            pk = int(path_params[2])
-        except (IndexError, ValueError):
-            pass       
-        return (resource, pk)
+        if '?' in resource:
+            param = resource.split('?')[1]
+            resource = resource.split('?')[0]
+            pair = param.split('=')
+            key = pair[0]
+            value = pair[1]
+            return (resource, key, value)
+        else:
+            id = None
+            try:
+                id = int(path_params[2])
+            except (IndexError, ValueError):
+                pass
+            return (resource, id)
 
     def do_GET(self):
         """Handles GET request to the server"""
         self._set_headers(200)
 
         response = {}
-
-        # Parse URL and store entire tuple in a variable
 
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
@@ -49,28 +49,30 @@ class HandleRequests(BaseHTTPRequestHandler):
 
                 else:
                     response = get_all_comments()
+                    
             if resource == "PostTags":
                 if id is not None:
-                    response= get_single_posttags(id)
-                    
+                    response= get_single_posttags(id)                    
                 else:   
                     response= get_all_posttags()
             
             if resource == "Categories":
                 if id is not None:
-                    response= get_single_category(id)
-                
-                else: response = get_all_categories()
+                    response= get_single_category(id)                
+                else: 
+                    response = get_all_categories()
+            
             if resource == "Subscriptions":
                 if id is not None:
                     response= get_single_subscription(id)
                 else:
-                    response= get_all_subscriptions
+                    response= get_all_subscriptions()
+            
             if resource == "Posts":
                 if id is not None:
                     response= get_single_post(id)
                 else:
-                    response= get_all_posts
+                    response= get_all_posts()
                     
              if resource == "Users":
                 if id is not None:
