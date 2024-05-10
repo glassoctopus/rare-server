@@ -38,8 +38,6 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         response = {}
 
-        # Parse URL and store entire tuple in a variable
-
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
             ( resource, id ) = self.parse_url()
@@ -51,29 +49,30 @@ class HandleRequests(BaseHTTPRequestHandler):
 
                 else:
                     response = get_all_comments()
+                    
             if resource == "PostTags":
                 if id is not None:
-                    response= get_single_posttags(id)
-                    
+                    response= get_single_posttags(id)                    
                 else:   
                     response= get_all_posttags()
             
             if resource == "Categories":
                 if id is not None:
-                    response= get_single_category(id)
-                
-                else: response = get_all_categories()
+                    response= get_single_category(id)                
+                else: 
+                    response = get_all_categories()
+            
             if resource == "Subscriptions":
                 if id is not None:
                     response= get_single_subscription(id)
                 else:
-                    response= get_all_subscriptions
+                    response= get_all_subscriptions()
+            
             if resource == "Posts":
                 if id is not None:
                     response= get_single_post(id)
                 else:
-                    response= get_all_posts
-
+                    response= get_all_posts()
 
         self.wfile.write(json.dumps(response).encode())
         
