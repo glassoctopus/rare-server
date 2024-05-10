@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
 from views import create_category, update_category, create_subscription, delete_subscription
-from views.user import create_user, login_user
+from views import create_user, login_user, get_single_user, get_all_users
 from views import get_single_comment,get_all_comments,create_comment
 from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
 from views import get_all_categories,get_single_category,delete_category
@@ -73,6 +73,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response= get_single_post(id)
                 else:
                     response= get_all_posts()
+                    
+             if resource == "Users":
+                if id is not None:
+                    response = get_single_user(id)
+                else:
+                    response = get_all_users()
+
 
         self.wfile.write(json.dumps(response).encode())
         
@@ -98,14 +105,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers',
                             'X-Requested-With, Content-Type, Accept')
         self.end_headers()
-        
+
     def do_POST(self):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        resource, _ = self.parse_url()
+        (resource, id) = self.parse_url(self.path)
 
         if resource == 'login':
             response = login_user(post_body)

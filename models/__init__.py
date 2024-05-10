@@ -4,4 +4,4 @@ from .comment import Comment
 from .tags import Tags
 from .posttags import Post_tags
 from .posts import Posts
-
+from .user import User
