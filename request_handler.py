@@ -1,10 +1,8 @@
 import json
-
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
 from views import create_category, update_category, create_subscription, delete_subscription
-
 from views.user import create_user, login_user
 from views import get_single_comment,get_all_comments,create_comment
 from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
@@ -15,7 +13,7 @@ from views import get_all_subscriptions,get_single_subscription
 class HandleRequests(BaseHTTPRequestHandler):
     """Handles the requests to this server"""
 
-    def parse_url(self, path):
+    def parse_url(self):
         """Parse the url into the resource and id"""
         path_params = self.path.split('/')
         resource = path_params[1]
@@ -41,11 +39,10 @@ class HandleRequests(BaseHTTPRequestHandler):
         response = {}
 
         # Parse URL and store entire tuple in a variable
-        parsed = self.parse_url(self.path)
 
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
-            ( resource, id ) = parsed
+            ( resource, id ) = self.parse_url()
 
             # It's an if..else statement
             if resource == "Comments":
@@ -71,6 +68,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                     response= get_single_subscription(id)
                 else:
                     response= get_all_subscriptions
+            if resource == "Posts":
+                if id is not None:
+                    response= get_single_post(id)
+                else:
+                    response= get_all_posts
 
 
         self.wfile.write(json.dumps(response).encode())
@@ -98,7 +100,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                             'X-Requested-With, Content-Type, Accept')
         self.end_headers()
         
-      def do_POST(self):
+    def do_POST(self):
         """Make a post request to the server"""
         self._set_headers(201)
         content_len = int(self.headers.get('content-length', 0))
