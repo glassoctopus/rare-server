@@ -10,13 +10,13 @@ def create_subscription(new_subscription):
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
-            INSERT INTO Subscription
-                ( id, follower_id, author_id, created_id)
+            INSERT INTO Subscriptions
+                ( id, follower_id, author_id, created_on)
             VALUES
                 ( ?, ?, ? )
             """, (new_subscription['follower_id'], 
                   new_subscription['author_id'], 
-                  new_subscription['created_id'], ))
+                  new_subscription['created_on'], ))
         
         id = db_cursor.lastrowid
                 
@@ -33,11 +33,11 @@ def update_subscription(id, new_subscription):
                 SET
                     follower_id = ?,
                     author_id = ?,
-                    created_id = ?
+                    created_on = ?
             WHERE id = ?
             """, (new_subscription['follower_id'], 
                   new_subscription['author_id'],  
-                  new_subscription['created_id'], 
+                  new_subscription['created_on'], 
                   id, ))
 
 def delete_subscription(id):
@@ -45,7 +45,7 @@ def delete_subscription(id):
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
-            DELETE FROM Subscription
+            DELETE FROM Subscriptions
             WHERE id = ?
             """, (id, ))
 
@@ -61,8 +61,8 @@ def get_all_subscriptions():
                 s.id,
                 s.follower_id,
                 s.author_id,
-                s.created_id
-            FROM Subscription s
+                s.created_on
+            FROM Subscriptions s
                 """)
         
         data = db_cursor.fetchall()
@@ -72,7 +72,7 @@ def get_all_subscriptions():
             subscription = Subscription(row['id'], 
                                         row['follower_id'], 
                                         row['author_id'], 
-                                        row['created_id'])
+                                        row['created_on'])
             subscriptions.append(subscription.__dict__)
         
         return subscriptions
@@ -87,8 +87,8 @@ def get_single_subscription(id):
                 s.id,
                 s.follower_id,
                 s.author_id,
-                s.created_id
-            FROM Subscription s
+                s.created_on
+            FROM Subscriptions s
             WHERE s.id = ?
             """, ( id, ))
         
@@ -97,7 +97,7 @@ def get_single_subscription(id):
         subscription = Subscription(data['id'], 
                                     data['follower_id'], 
                                     data['author_id'], 
-                                    data['created_id'])
+                                    data['created_on'])
         
         return subscription.__dict__
 
@@ -111,9 +111,9 @@ def get_subscriptions_by_author(author_id):
                 s.id,
                 s.follower_id,
                 s.author_id,
-                s.created_id,
+                s.created_on,
                 u.first_name
-            FROM Subscription s
+            FROM Subscriptions s
             WHERE s.author_id = ?
             JOIN Users u
                 ON s.author_id = u.id                          
