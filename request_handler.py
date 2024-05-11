@@ -123,7 +123,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        (resource, id) = self.parse_url()
+        resource, _ = self.parse_url()
 
         if resource == 'login':
             response = login_user(post_body)
@@ -137,8 +137,12 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = create_posttag(post_body)
         if resource == 'Tags':
             response = create_tag(post_body)
+        if resource == 'Categories':
+            response = create_tag(post_body)
+        if resource == 'Subscriptions':
+            response = create_tag(post_body)
 
-        self.wfile.write(response.encode())
+        self.wfile.write(json.dumps(response).encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
@@ -154,9 +158,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "Posts": 
             success = update_post(id, post_body)
         if resource == 'Categories':
-            response = create_category(id,post_body)
+            response = update_category(id,post_body)
         if resource == 'Subscriptions':
-            response = create_subscription(id,post_body)
+            response = update_subscription(id,post_body)
         if resource == 'Comments':
             response = update_comment(id,post_body)
         if resource == 'PostTags':
@@ -181,19 +185,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         # Delete a single animal from the list
         if resource == "Categories":
             delete_category(id)
-            self.wfile.write("".encode())
         if resource == "Subscriptions":
-            delete_category(id)
-            self.wfile.write("".encode())
+            delete_subscription(id)
         if resource == "Comments":
             delete_comment(id)
-            self.wfile.write("".encode())
         if resource == "PostTags":
             delete_posttag(id)
-            self.wfile.write("".encode())
         if resource == "Tags":
             delete_tag(id)
-            self.wfile.write("".encode())
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
