@@ -5,7 +5,7 @@ from models import Comment
 
 def get_all_comments():
     """Function to get all comments"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -35,7 +35,7 @@ def get_all_comments():
 
 def update_comment(id, new_comment):
     """Updates comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -62,7 +62,7 @@ def update_comment(id, new_comment):
     
 def delete_comment(id):
     """Function to delete a comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -72,7 +72,7 @@ def delete_comment(id):
 
 def create_comment(new_comment):
     """Creates a new comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -96,7 +96,7 @@ def create_comment(new_comment):
 
 def get_single_comment(id):
     """Variable to hold a single comment if it exists"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 

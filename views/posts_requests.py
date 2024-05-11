@@ -1,22 +1,23 @@
 import sqlite3
 from models import Posts
 
-POSTS = [
-  {
-    "id": 1, 
-    "user_id": 1, 
-    "category_id": 1, 
-    "title": "Ipsum Lorem",
-    "publication_date": "January 2024",
-    "image_url": "", 
-    "content": "Latin Stuff", 
-    "approved": 1
-    }
-]
+#can we remove this? there is an insert in db.sql that creates this so we can align on dummy data. 
+# POSTS = [
+#   {
+#     "id": 1, 
+#     "user_id": 1, 
+#     "category_id": 1, 
+#     "title": "Ipsum Lorem",
+#     "publication_date": "January 2024",
+#     "image_url": "", 
+#     "content": "Latin Stuff", 
+#     "approved": 1
+#     }
+# ]
 
 def get_all_posts():
   
-    with sqlite3.connect("./rare.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -47,7 +48,7 @@ def get_all_posts():
     return posts
 
 def get_single_post(id):
-    with sqlite3.connect("./rare.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 

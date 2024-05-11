@@ -1,13 +1,12 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post
-from urllib.parse import urlparse, parse_qs
-from views import create_category, update_category, create_subscription, delete_subscription
+from views import create_category, update_category, create_subscription, delete_subscription, update_subscription
 from views import create_user, login_user, get_single_user, get_all_users
 from views import get_single_comment,get_all_comments,create_comment
 from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
 from views import get_all_categories,get_single_category,delete_category
-from views import get_all_subscriptions,get_single_subscription
+from views import get_all_subscriptions, get_single_subscription, get_subscriptions_by_author
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -46,7 +45,6 @@ class HandleRequests(BaseHTTPRequestHandler):
             if resource == "Comments":
                 if id is not None:
                     response = get_single_comment(id)
-
                 else:
                     response = get_all_comments()
                     
@@ -58,7 +56,7 @@ class HandleRequests(BaseHTTPRequestHandler):
             
             if resource == "Categories":
                 if id is not None:
-                    response= get_single_category(id)                
+                    response = get_single_category(id)                
                 else: 
                     response = get_all_categories()
             
@@ -74,12 +72,16 @@ class HandleRequests(BaseHTTPRequestHandler):
                 else:
                     response= get_all_posts()
                     
-             if resource == "Users":
+            if resource == "Users":
                 if id is not None:
                     response = get_single_user(id)
                 else:
                     response = get_all_users()
 
+        else:
+            (resource, query, value) = self.parse_url()
+            if resource == "Subscriptions" and query=="author_id":
+                response = get_subscriptions_by_author(value)
 
         self.wfile.write(json.dumps(response).encode())
         
@@ -112,26 +114,51 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        (resource, id) = self.parse_url(self.path)
+        resource, _ = self.parse_url()
 
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
-
-        self.wfile.write(response.encode())
+        if resource == 'Categories':
+            response = create_category(post_body)
+        if resource == 'Subscriptions':
+            response = create_subscription(post_body)
+        
+        self.wfile.write(json.dumps(response).encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
-        pass
+        
+        content_len = int(self.headers.get('content-length', 0))
+        post_body = json.loads(self.rfile.read(content_len))
+        ( resource, id ) = self.parse_url()
+        
+        success = False
+        
+        if resource == "Categories":
+            success = update_category(id, post_body)
+        if resource == "Subscriptions":
+            success = update_subscription(id, post_body)
+        
+        if success:
+            self._set_headers(204)
+        else:
+            self._set_headers(404)
+
+        self.wfile.write("".encode())
 
     def do_DELETE(self):
-        """Handle DELETE Requests"""
-        pass
+        self._set_headers(204)
 
+        # Parse the URL
+        (resource, id) = self.parse_url()
 
-
-
+        # Delete a single animal from the list
+        if resource == "Categories":
+            delete_category(id)
+        if resource == "Subscriptions":
+            delete_category(id)
 
 def main():
     """Starts the server on port 8088 using the HandleRequests class
