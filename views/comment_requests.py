@@ -43,7 +43,7 @@ def update_comment(id, new_comment):
             SET
                 author_id = ?,
                 post_id = ?,
-                content = ?,
+                content = ?
         WHERE id = ?
         """, (new_comment['author_id'], new_comment['post_id'],
               new_comment['content'], id, ))
