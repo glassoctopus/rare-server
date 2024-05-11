@@ -1,24 +1,25 @@
 import sqlite3
-from models import Post_tags
+from models import Comment
 
 
 
-def get_all_posttags():
+def get_all_comments():
     """Function to get all comments"""
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
         SELECT
-            p.id,
-            p.tag_id,
-            p.post_id,
-        FROM PostTags p
+            c.id,
+            c.author_id,
+            c.post_id,
+            c.content
+        FROM Comments c
         """)
 
         # Initialize an empty list to hold all comments
-        post_tags = []
+        comments = []
 
         # Convert rows of data into a Python list
         dataset = db_cursor.fetchall()
@@ -26,24 +27,26 @@ def get_all_posttags():
         # Iterate list of data returned from database
         for row in dataset:
             # Create a Comment instance from the current row
-            post_tag = Post_tags(row['id'], row['tag_id'], row['post_id'])
-            post_tags.append(post_tag.__dict__)
+            comment = Comment(row['id'], row['author_id'], row['post_id'], row['content'])
+            comments.append(comment.__dict__)
 
-    return post_tags
+    return comments
 
 
-def update_posttag(id, new_posttag):
+def update_comment(id, new_comment):
     """Updates comment"""
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        UPDATE PostTags
+        UPDATE Comments
             SET
-                tag_id = ?,
+                author_id = ?,
                 post_id = ?,
+                content = ?,
         WHERE id = ?
-        """, (new_posttag['tag_id'], new_posttag['post_id'], id, ))
+        """, (new_comment['author_id'], new_comment['post_id'],
+              new_comment['content'], id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
@@ -57,27 +60,27 @@ def update_posttag(id, new_posttag):
         # Forces 204 response by main module
         return True
     
-def delete_posttag(id):
+def delete_comment(id):
     """Function to delete a comment"""
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        DELETE FROM PostTags
+        DELETE FROM Comments
         WHERE id = ?
         """, (id, ))
 
-def create_posttag(new_posttag):
+def create_comment(new_comment):
     """Creates a new comment"""
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./kennel.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        INSERT INTO PostTags
-            (id,tag_id, post_id, content)
+        INSERT INTO Comments
+            (id,author_id, post_id, content)
         VALUES
             (?,?, ?, ?);
-        """, (new_posttag['id'],new_posttag['tag_id'], new_posttag['post_id']))
+        """, (new_comment['id'],new_comment['author_id'], new_comment['post_id'], new_comment['content']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to
@@ -87,13 +90,13 @@ def create_posttag(new_posttag):
         # Add the `id` property to the comment dictionary that
         # was sent by the client so that the client sees the
         # primary key in the response.
-        new_posttag['id'] = id
+        new_comment['id'] = id
 
-    return new_posttag
+    return new_comment
 
-def get_single_posttags(id):
+def get_single_comment(id):
     """Variable to hold a single comment if it exists"""
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./kennel.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -101,17 +104,18 @@ def get_single_posttags(id):
         # into the SQL statement.
         db_cursor.execute("""
         SELECT
-            p.id,
-            p.tag_id,
-            p.post_id,
-        FROM PostTags p
-        WHERE p.id = ?
+            c.id,
+            c.author_id,
+            c.post_id,
+            c.content
+        FROM Comments c
+        WHERE c.id = ?
         """, (id, ))
 
         # Load the single result into memory
         data = db_cursor.fetchone()
 
         # Create a comment instance from the current row
-        post_tag = Post_tags(data['id'], data['tag_id'], data['post_id'])
+        comment = Comment(data['id'], data['author_id'], data['post_id'], data['content'])
 
-        return post_tag.__dict__
+        return comment.__dict__

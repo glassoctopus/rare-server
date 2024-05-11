@@ -1,6 +1,6 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_posts, get_single_post, create_post, update_post
+from views import get_all_posts, get_single_post
 from urllib.parse import urlparse, parse_qs
 from views import create_category, update_category, create_subscription, delete_subscription
 from views import create_user, login_user, get_single_user, get_all_users
@@ -112,37 +112,18 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        resource, _ = self.parse_url()
+        (resource, id) = self.parse_url(self.path)
 
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
-        if resource == 'Posts':
-            response = create_post(post_body)
 
         self.wfile.write(response.encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
-        content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len)
-        post_body = json.loads(post_body)
-
-        # Parse the URL
-        (resource, id) = self.parse_url()
-        # set default value of success
-        success = False
-
-        if resource == "Posts": 
-            success = update_post(id, post_body)
-            
-        if success:
-            self._set_headers(204)
-        else:
-            self._set_headers(404)
-            
-        self.wfile.write("".encode())
+        pass
 
     def do_DELETE(self):
         """Handle DELETE Requests"""

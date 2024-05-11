@@ -3,7 +3,7 @@ import json
 from models import Subscription
 
 def create_subscription(new_subscription):
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./rare.sqlite3") as conn:
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
@@ -20,7 +20,7 @@ def create_subscription(new_subscription):
     return new_subscription
 
 def delete_subscription(id):
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./rare.sqlite3") as conn:
         db_cursor = conn.cursor()
         
         db_cursor.execute("""
@@ -29,7 +29,7 @@ def delete_subscription(id):
             """, (id, ))
 
 def get_all_subscriptions():
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./rare.sqlite3") as conn:
         
         subscriptions = []
         conn.row_factory = sqlite3.Row
@@ -54,7 +54,7 @@ def get_all_subscriptions():
         return subscriptions
 
 def get_single_subscription(id):
-    with sqlite3.connect("./db.sqlite3") as conn:
+    with sqlite3.connect("./rare.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
         

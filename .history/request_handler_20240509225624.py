@@ -130,18 +130,16 @@ class HandleRequests(BaseHTTPRequestHandler):
         post_body = json.loads(post_body)
 
         # Parse the URL
-        (resource, id) = self.parse_url()
+        resource, _ = self.parse_url()
+
         # set default value of success
         success = False
 
-        if resource == "Posts": 
+        if resource == "Posts":
+           
             success = update_post(id, post_body)
-            
-        if success:
-            self._set_headers(204)
-        else:
-            self._set_headers(404)
-            
+        
+
         self.wfile.write("".encode())
 
     def do_DELETE(self):

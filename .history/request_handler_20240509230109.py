@@ -136,12 +136,7 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         if resource == "Posts": 
             success = update_post(id, post_body)
-            
-        if success:
-            self._set_headers(204)
-        else:
-            self._set_headers(404)
-            
+        
         self.wfile.write("".encode())
 
     def do_DELETE(self):
