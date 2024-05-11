@@ -3,9 +3,10 @@ import json
 from datetime import datetime
 from models import User
 
-USERS = [
-    {"id": 1, "first_name": "Sarah", "last_name": "Brown", "email": "user1@example.com", "bio": "This is my bio.", "username": "User1", "password": "password1", "profile_image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Original_Doge_meme.jpg/330px-Original_Doge_meme.jpg", "created_on": 2024-5-7, "active": 1 }
-]
+#There is an insert of this in db.sql, can we delete it?
+# USERS = [
+#     {"id": 1, "first_name": "Sarah", "last_name": "Brown", "email": "user1@example.com", "bio": "This is my bio.", "username": "User1", "password": "password1", "profile_image_url": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5f/Original_Doge_meme.jpg/330px-Original_Doge_meme.jpg", "created_on": 2024-5-7, "active": 1 }
+# ]
 
 def login_user(user):
     """Checks for the user in the database
