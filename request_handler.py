@@ -74,7 +74,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 else:
                     response= get_all_posts()
                     
-             if resource == "Users":
+            if resource == "Users":
                 if id is not None:
                     response = get_single_user(id)
                 else:
@@ -112,7 +112,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        (resource, id) = self.parse_url(self.path)
+        (resource, id) = self.parse_url()
 
         if resource == 'login':
             response = login_user(post_body)
