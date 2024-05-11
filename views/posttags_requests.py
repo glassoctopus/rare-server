@@ -5,7 +5,7 @@ from models import Post_tags
 
 def get_all_posttags():
     """Function to get all comments"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -13,7 +13,7 @@ def get_all_posttags():
         SELECT
             p.id,
             p.tag_id,
-            p.post_id,
+            p.post_id
         FROM PostTags p
         """)
 
@@ -34,7 +34,7 @@ def get_all_posttags():
 
 def update_posttag(id, new_posttag):
     """Updates comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -43,7 +43,7 @@ def update_posttag(id, new_posttag):
                 tag_id = ?,
                 post_id = ?,
         WHERE id = ?
-        """, (new_posttag['tag_id'], new_posttag['post_id'], id, ))
+        """, ( id,new_posttag['tag_id'], new_posttag['post_id'], ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
@@ -59,7 +59,7 @@ def update_posttag(id, new_posttag):
     
 def delete_posttag(id):
     """Function to delete a comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
@@ -69,15 +69,15 @@ def delete_posttag(id):
 
 def create_posttag(new_posttag):
     """Creates a new comment"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
         INSERT INTO PostTags
-            (id,tag_id, post_id, content)
+            (id,post_id,tag_id )
         VALUES
-            (?,?, ?, ?);
-        """, (new_posttag['id'],new_posttag['tag_id'], new_posttag['post_id']))
+            (?,?, ?);
+        """, (new_posttag['id'],new_posttag['post_id'], new_posttag['tag_id']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to
@@ -93,7 +93,7 @@ def create_posttag(new_posttag):
 
 def get_single_posttags(id):
     """Variable to hold a single comment if it exists"""
-    with sqlite3.connect("./kennel.sqlite3") as conn:
+    with sqlite3.connect("./db.sqlite3") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
@@ -103,7 +103,7 @@ def get_single_posttags(id):
         SELECT
             p.id,
             p.tag_id,
-            p.post_id,
+            p.post_id
         FROM PostTags p
         WHERE p.id = ?
         """, (id, ))

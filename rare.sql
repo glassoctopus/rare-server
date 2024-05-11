@@ -12,3 +12,6 @@ CREATE TABLE `Category` (
 
 INSERT INTO posts (id, user_id,category_id,title,publication_date,image_url,content,approved)
 VALUES (1,1232,112223,09809,"Hello World",02/02/2024,"dasdasd","sadasdsad",true);
+
+INSERT INTO posttags (id, tag_id,post_id)
+VALUES (1,1232,112223);

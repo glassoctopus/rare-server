@@ -77,7 +77,7 @@ class HandleRequests(BaseHTTPRequestHandler):
                 else:
                     response= get_all_posts()
                     
-             if resource == "Users":
+            if resource == "Users":
                 if id is not None:
                     response = get_single_user(id)
                 else:
@@ -115,14 +115,27 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        (resource, id) = self.parse_url(self.path)
+        
+        
+        (resource, id) = self.parse_url()  # remove self.path from here
+   
+        new_comment = None
+        new_posttag = None
 
         if resource == 'login':
             response = login_user(post_body)
         if resource == 'register':
             response = create_user(post_body)
+        if resource == 'Comments':
+            new_comment = create_comment(post_body)
+        self.wfile.write(json.dumps(new_comment).encode())
+           
+        if resource == 'PostTags':
+            new_posttag = create_posttag(post_body)
+        self.wfile.write(json.dumps(new_posttag).encode())
+        return
+            
 
-        self.wfile.write(response.encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
