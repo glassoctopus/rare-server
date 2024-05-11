@@ -4,9 +4,10 @@ from views import get_all_posts, get_single_post, create_post, update_post, dele
 from views import create_category, update_category, create_subscription, delete_subscription, update_subscription
 from views import create_user, login_user, get_single_user, get_all_users
 from views import get_single_comment,get_all_comments,create_comment,delete_comment,update_comment
-from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag
+from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag,update_posttag
 from views import get_all_categories,get_single_category,delete_category
 from views import get_all_subscriptions, get_single_subscription, get_subscriptions_by_author
+from views import get_all_tags,get_single_tag,update_tag,delete_tag,create_tag
 
 
 class HandleRequests(BaseHTTPRequestHandler):
@@ -79,6 +80,11 @@ class HandleRequests(BaseHTTPRequestHandler):
                 else:
                     response = get_all_users()
 
+            if resource == "Tags":
+                if id is not None:
+                    response = get_single_tag(id)
+                else:
+                    response = get_all_tags()
         else:
             (resource, query, value) = self.parse_url()
             if resource == "Subscriptions" and query=="author_id":
@@ -125,8 +131,16 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = create_post(post_body)
         if resource == 'Comments':
             response = create_comment(post_body)
+        if resource == 'PostTags':
+            response = create_posttag(post_body)
+        if resource == 'Tags':
+            response = create_tag(post_body)
+        if resource == 'Categories':
+            response = create_tag(post_body)
+        if resource == 'Subscriptions':
+            response = create_tag(post_body)
 
-        self.wfile.write(response.encode())
+        self.wfile.write(json.dumps(response).encode())
 
     def do_PUT(self):
         """Handles PUT requests to the server"""
@@ -147,13 +161,17 @@ class HandleRequests(BaseHTTPRequestHandler):
             response = update_subscription(id, post_body)
         if resource == 'Comments':
             response = update_comment(id, post_body)
+        if resource == 'PostTags':
+            response = update_posttag(id, post_body)
+        if resource == 'Tags':
+            response = update_tag(id, post_body)
       
         if success:
             self._set_headers(204)
         else:
             self._set_headers(404)
 
-        self.wfile.write(json.dumps(response).encode())
+        self.wfile.write("".encode())
 
 
     def do_DELETE(self):
@@ -166,13 +184,15 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == "Categories":
             delete_category(id)
         if resource == "Subscriptions":
-            delete_category(id)
+            delete_subscription(id)
         if resource == "Comments":
-            delete_comment
+            delete_comment(id)
         if resource == "Posts":
-            delete_post(id)   
-
-        self.wfile.write("".encode())
+            delete_post(id) 
+        if resource == "PostTags":
+            delete_posttag(id)
+        if resource == "Tags":
+            delete_tag(id)
         
         
 def main():

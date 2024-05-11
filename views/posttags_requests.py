@@ -41,9 +41,9 @@ def update_posttag(id, new_posttag):
         UPDATE PostTags
             SET
                 tag_id = ?,
-                post_id = ?,
+                post_id = ?
         WHERE id = ?
-        """, ( id,new_posttag['tag_id'], new_posttag['post_id'], ))
+        """, ( new_posttag['tag_id'], new_posttag['post_id'],id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
