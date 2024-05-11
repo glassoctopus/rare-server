@@ -107,7 +107,7 @@ def update_post(id, new_post):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        UPDATE Posts
+        UPDATE Post
             SET
                 user_id = ?,
                 category_id = ?,
@@ -139,6 +139,6 @@ def delete_post(id):
         db_cursor = conn.cursor()
 
         db_cursor.execute("""
-        DELETE FROM Posts
+        DELETE FROM Post
         WHERE id = ?
         """, (id, ))
