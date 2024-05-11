@@ -1,19 +1,18 @@
 import sqlite3
 from models import Posts
 
-#can we remove this? there is an insert in db.sql that creates this so we can align on dummy data. 
-# POSTS = [
-#   {
-#     "id": 1, 
-#     "user_id": 1, 
-#     "category_id": 1, 
-#     "title": "Ipsum Lorem",
-#     "publication_date": "January 2024",
-#     "image_url": "", 
-#     "content": "Latin Stuff", 
-#     "approved": 1
-#     }
-# ]
+POSTS = [
+  {
+    "id": 1, 
+    "user_id": 1, 
+    "category_id": 1, 
+    "title": "Ipsum Lorem",
+    "publication_date": "January 2024",
+    "image_url": "", 
+    "content": "Latin Stuff", 
+    "approved": 1
+    }
+]
 
 def get_all_posts():
   
@@ -37,11 +36,12 @@ def get_all_posts():
         posts = []
 
         dataset = db_cursor.fetchall()
+        print(dataset)
         
         for row in dataset:
-   
+            print(row)
             post = Posts(row['id'], row['user_id'], row['category_id'], row['title'], row['publication_date'], row['image_url'], row['content'], row['approved'])
-        
+            print(post.__dict__)
             posts.append(post.__dict__)
 
     return posts
@@ -101,35 +101,3 @@ def create_post(new_post):
 
 
     return new_post
-
-def update_post(id, new_post):
-    with sqlite3.connect("./db.sqlite3") as conn:
-        db_cursor = conn.cursor()
-
-        db_cursor.execute("""
-        UPDATE Posts
-            SET
-                user_id = ?,
-                category_id = ?,
-                title = ?,
-                publication_date = ?,
-                image_url = ?,
-                content = ?,
-                approved = ?
-        WHERE id = ?
-        """, (new_post['user_id'], new_post['category_id'],
-              new_post['title'], new_post['publication_date'],
-              new_post['image_url'], new_post['content'], new_post['approved'], id, ))
-
-        # Were any rows affected?
-        # Did the client send an `id` that exists?
-        rows_affected = db_cursor.rowcount
-
-    # return value of this function
-    if rows_affected == 0:
-        # Forces 404 response by main module
-        return False
-    else:
-        # Forces 204 response by main module
-        return True
-        
