@@ -115,7 +115,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         content_len = int(self.headers.get('content-length', 0))
         post_body = json.loads(self.rfile.read(content_len))
         response = ''
-        resource, _ = self.parse_url()
+        (resource, id) = self.parse_url(self.path)
 
         if resource == 'login':
             response = login_user(post_body)
@@ -139,14 +139,14 @@ class HandleRequests(BaseHTTPRequestHandler):
         # set default value of success
         success = False
 
-        if resource == 'Posts': 
-            success = update_post(id, post_body)
+        if resource == "Posts": 
+            success = update_post(post_body)
         if resource == 'Categories':
-            response = update_category(id, post_body)
+            response = create_category(post_body)
         if resource == 'Subscriptions':
-            response = update_subscription(id, post_body)
+            response = create_subscription(post_body)
         if resource == 'Comments':
-            response = update_comment(id, post_body)
+            response = update_comment(post_body)
       
         if success:
             self._set_headers(204)
