@@ -136,9 +136,9 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'Tags':
             response = create_tag(post_body)
         if resource == 'Categories':
-            response = create_tag(post_body)
+            response = create_category(post_body)
         if resource == 'Subscriptions':
-            response = create_tag(post_body)
+            response = create_subscription(post_body)
 
         self.wfile.write(json.dumps(response).encode())
 
@@ -156,22 +156,25 @@ class HandleRequests(BaseHTTPRequestHandler):
         if resource == 'Posts': 
             success = update_post(id, post_body)
         if resource == 'Categories':
-            response = update_category(id, post_body)
+            success = update_category(id, post_body)
         if resource == 'Subscriptions':
-            response = update_subscription(id, post_body)
+            success = update_subscription(id, post_body)
         if resource == 'Comments':
-            response = update_comment(id, post_body)
+            success = update_comment(id, post_body)
         if resource == 'PostTags':
-            response = update_posttag(id, post_body)
+            success = update_posttag(id, post_body)
         if resource == 'Tags':
-            response = update_tag(id, post_body)
+            success = update_tag(id, post_body)
+            
+        print(success)
       
         if success:
             self._set_headers(204)
         else:
             self._set_headers(404)
-
-        self.wfile.write("".encode())
+            
+        self.wfile.write(json.dumps(success).encode())
+        #self.wfile.write("".encode())
 
 
     def do_DELETE(self):

@@ -11,7 +11,7 @@ def create_subscription(new_subscription):
         
         db_cursor.execute("""
             INSERT INTO Subscriptions
-                ( id, follower_id, author_id, created_on)
+                ( follower_id, author_id, created_on)
             VALUES
                 ( ?, ?, ? )
             """, (new_subscription['follower_id'], 
