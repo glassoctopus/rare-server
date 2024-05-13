@@ -39,6 +39,12 @@ def update_subscription(id, new_subscription):
                   new_subscription['author_id'],  
                   new_subscription['created_on'], 
                   id, ))
+        row_affected = db_cursor.rowcount
+    
+        if row_affected == 0:
+            return False
+        else:
+            return True
 
 def delete_subscription(id):
     with sqlite3.connect("./db.sqlite3") as conn:
@@ -114,9 +120,10 @@ def get_subscriptions_by_author(author_id):
                 s.created_on,
                 u.first_name
             FROM Subscriptions s
-            WHERE s.author_id = ?
             JOIN Users u
-                ON s.author_id = u.id                          
+                ON s.author_id = u.id
+            WHERE s.author_id = ?                       
         """, ( author_id, ))
         
-        
+        results = db_cursor.fetchall()
+        return results

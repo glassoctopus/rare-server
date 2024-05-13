@@ -29,6 +29,13 @@ def update_category(id, new_category):
                     label = ?
             WHERE id = ?
             """, ( new_category['label'], id, ))
+        
+        row_affected = db_cursor.rowcount
+        
+        if row_affected == 0:
+            return False
+        else:
+            return True
 
 def delete_category(id):
     with sqlite3.connect("./db.sqlite3") as conn:
