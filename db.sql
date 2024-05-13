@@ -28,7 +28,7 @@ CREATE TABLE "Users" (
   "created_on" date,
   "active" bit
 );
-
+INSERT INTO Comments ('id','author_id','post_id','content')VALUES (5,5,234,'HELLO');
 INSERT INTO Users ('first_name', 
                     'last_name', 
                     'email', 

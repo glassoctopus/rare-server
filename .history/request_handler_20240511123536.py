@@ -2,7 +2,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from views import get_all_posts, get_single_post, create_post, update_post, delete_post
 from views import create_category, update_category, create_subscription, delete_subscription, update_subscription
-from views import create_user, login_user, get_single_user, get_all_users, update_user, delete_user
+from views import create_user, login_user, get_single_user, get_all_users
 from views import get_single_comment,get_all_comments,create_comment,delete_comment,update_comment
 from views import get_single_posttags,get_all_posttags,create_posttag,delete_posttag,update_posttag
 from views import get_all_categories,get_single_category,delete_category
@@ -37,6 +37,7 @@ class HandleRequests(BaseHTTPRequestHandler):
         self._set_headers(200)
 
         response = {}
+       
 
         # If the path does not include a query parameter, continue with the original if block
         if '?' not in self.path:
@@ -164,11 +165,9 @@ class HandleRequests(BaseHTTPRequestHandler):
             success = update_posttag(id, post_body)
         if resource == 'Tags':
             success = update_tag(id, post_body)
-        if resource == 'Users':
-            success = update_user(id, post_body)
             
         print(success)
-        
+      
         if success:
             self._set_headers(204)
         else:
@@ -197,8 +196,6 @@ class HandleRequests(BaseHTTPRequestHandler):
             delete_posttag(id)
         if resource == "Tags":
             delete_tag(id)
-        if resource == 'Users':
-            delete_user(id)
         
         
 def main():

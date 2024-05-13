@@ -13,7 +13,7 @@ def get_all_posttags():
         SELECT
             p.id,
             p.tag_id,
-            p.post_id,
+            p.post_id
         FROM PostTags p
         """)
 
@@ -41,9 +41,9 @@ def update_posttag(id, new_posttag):
         UPDATE PostTags
             SET
                 tag_id = ?,
-                post_id = ?,
+                post_id = ?
         WHERE id = ?
-        """, (new_posttag['tag_id'], new_posttag['post_id'], id, ))
+        """, ( new_posttag['tag_id'], new_posttag['post_id'],id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
@@ -74,10 +74,10 @@ def create_posttag(new_posttag):
 
         db_cursor.execute("""
         INSERT INTO PostTags
-            (id,tag_id, post_id, content)
+            (id,post_id,tag_id )
         VALUES
-            (?,?, ?, ?);
-        """, (new_posttag['id'],new_posttag['tag_id'], new_posttag['post_id']))
+            (?,?, ?);
+        """, (new_posttag['id'],new_posttag['post_id'], new_posttag['tag_id']))
 
         # The `lastrowid` property on the cursor will return
         # the primary key of the last thing that got added to
@@ -103,7 +103,7 @@ def get_single_posttags(id):
         SELECT
             p.id,
             p.tag_id,
-            p.post_id,
+            p.post_id
         FROM PostTags p
         WHERE p.id = ?
         """, (id, ))
